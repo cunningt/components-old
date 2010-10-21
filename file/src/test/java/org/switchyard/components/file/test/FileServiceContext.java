@@ -20,14 +20,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file.test;
+package org.switchyard.components.file.test;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.Context;
-import org.jboss.esb.cinco.ExchangePattern;
-import org.jboss.esb.cinco.components.file.FileServiceConfig;
-import org.jboss.esb.cinco.internal.BaseContext;
+import org.switchyard.Context;
+import org.switchyard.ExchangePattern;
+import org.switchyard.components.file.FileServiceConfig;
+import org.switchyard.internal.BaseContext;
 
 public class FileServiceContext extends BaseContext {
 

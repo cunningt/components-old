@@ -1,4 +1,4 @@
-package org.jboss.esb.cinco.components.file.test;
+package org.switchyard.components.file.test;
 
 /*
  * JBoss, Home of Professional Open Source.
@@ -26,18 +26,18 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.BaseHandler;
-import org.jboss.esb.cinco.Context;
-import org.jboss.esb.cinco.Exchange;
-import org.jboss.esb.cinco.ExchangePattern;
-import org.jboss.esb.cinco.Message;
-import org.jboss.esb.cinco.components.file.FileComponent;
-import org.jboss.esb.cinco.event.ExchangeOutEvent;
-import org.jboss.esb.cinco.internal.BaseContext;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.switchyard.BaseHandler;
+import org.switchyard.Context;
+import org.switchyard.Exchange;
+import org.switchyard.ExchangePattern;
+import org.switchyard.Message;
+import org.switchyard.components.file.FileComponent;
+import org.switchyard.event.ExchangeOutEvent;
+import org.switchyard.internal.BaseContext;
 
 
 public class FileProviderTest {

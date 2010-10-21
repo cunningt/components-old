@@ -20,7 +20,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file;
+package org.switchyard.components.file;
 
 import java.io.File;
 import java.util.HashMap;
@@ -28,11 +28,13 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.BaseHandler;
-import org.jboss.esb.cinco.Direction;
-import org.jboss.esb.cinco.Exchange;
-import org.jboss.esb.cinco.event.ExchangeInEvent;
-import org.jboss.esb.cinco.event.ExchangeOutEvent;
+import org.switchyard.components.file.FileUtil;
+import org.switchyard.components.file.Properties;
+import org.switchyard.BaseHandler;
+import org.switchyard.Direction;
+import org.switchyard.Exchange;
+import org.switchyard.event.ExchangeInEvent;
+import org.switchyard.event.ExchangeOutEvent;
 
 public class FileSpool extends BaseHandler {
 

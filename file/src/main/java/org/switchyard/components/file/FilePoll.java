@@ -20,17 +20,20 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file;
+package org.switchyard.components.file;
 
 import java.io.File;
 import java.io.FileFilter;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.Exchange;
-import org.jboss.esb.cinco.Message;
-import org.jboss.esb.cinco.MessageBuilder;
-import org.jboss.esb.cinco.ServiceDomain;
+import org.switchyard.components.file.FileUtil;
+import org.switchyard.components.file.PollingFilter;
+import org.switchyard.components.file.Properties;
+import org.switchyard.Exchange;
+import org.switchyard.Message;
+import org.switchyard.MessageBuilder;
+import org.switchyard.ServiceDomain;
 
 public class FilePoll implements Runnable {
 

@@ -20,10 +20,10 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file.test;
+package org.switchyard.components.file.test;
 
-import org.jboss.esb.cinco.internal.DefaultServiceRegistry;
-import org.jboss.esb.cinco.spi.ServiceRegistry;
+import org.switchyard.internal.DefaultServiceRegistry;
+import org.switchyard.spi.ServiceRegistry;
 
 public class MockManagedContext {
 

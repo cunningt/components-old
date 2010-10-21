@@ -20,14 +20,14 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file;
+package org.switchyard.components.file;
 
 import java.io.File;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.ExchangePattern;
-import org.jboss.esb.cinco.Context;
+import org.switchyard.Context;
+import org.switchyard.ExchangePattern;
 
 public class FileServiceConfig {
 

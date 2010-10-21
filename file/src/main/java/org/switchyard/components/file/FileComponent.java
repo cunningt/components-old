@@ -1,4 +1,4 @@
-package org.jboss.esb.cinco.components.file;
+package org.switchyard.components.file;
 /*
  * JBoss, Home of Professional Open Source.
  * Copyright 2010, Red Hat, Inc., and individual contributors
@@ -30,13 +30,15 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
-import org.jboss.esb.cinco.Context;
-import org.jboss.esb.cinco.ExchangePattern;
-import org.jboss.esb.cinco.MessageBuilder;
-import org.jboss.esb.cinco.Service;
-import org.jboss.esb.cinco.ServiceDomain;
-import org.jboss.esb.cinco.internal.ServiceDomains;
-import org.jboss.esb.cinco.internal.ServiceRegistration;
+import org.switchyard.components.file.FilePoll;
+import org.switchyard.components.file.FileSpool;
+import org.switchyard.Context;
+import org.switchyard.ExchangePattern;
+import org.switchyard.MessageBuilder;
+import org.switchyard.Service;
+import org.switchyard.ServiceDomain;
+import org.switchyard.internal.ServiceDomains;
+import org.switchyard.internal.ServiceRegistration;
 
 public class FileComponent {
 	

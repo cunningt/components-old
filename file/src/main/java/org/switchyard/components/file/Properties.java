@@ -20,13 +20,13 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-package org.jboss.esb.cinco.components.file;
+package org.switchyard.components.file;
 
 public final class Properties {
 
 	public static final String IN_FILE_DIR = 
-		"org.jboss.esb.cinco.file.inFileDir";
+		"org.switchyard.file.inFileDir";
 	public static final String IN_FILE_NAME = 
-		"org.jboss.esb.cinco.file.inFileName";
+		"org.switchyard.file.inFileName";
 	
 }
