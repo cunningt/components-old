@@ -1,0 +1,7 @@
+.project
+.classpath
+.settings/
+target/
+bin/
+components/bin/
+components/file/bin
