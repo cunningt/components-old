@@ -22,11 +22,11 @@
 
 package org.switchyard.components.file;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.CharBuffer;
 
 public class FileUtil {
 	
@@ -40,22 +40,28 @@ public class FileUtil {
 	 */
 	public static String readContent(File file) throws java.io.IOException {
 		
+		BufferedReader br = null;
 		FileReader rfile = null;
-		String content = null;
+		StringBuffer content = new StringBuffer();
 		
 		try {
 			rfile = new FileReader(file);
-			CharBuffer buff = CharBuffer.allocate((int)file.length());
-			rfile.read(buff);
-			content = buff.toString();
+			br = new BufferedReader(rfile);
+			String s = null;
+			while((s = br.readLine()) != null) {
+				content.append(s);
+			} 
 		}
 		finally {
+			if (br != null) {
+				br.close();
+			}
 			if (rfile != null) {
 				rfile.close();
 			}
 		}
 		
-		return content;
+		return content.toString();
 	}
 	
 	public static void writeContent(String content, File dest) 

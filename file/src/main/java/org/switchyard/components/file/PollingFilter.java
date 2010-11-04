@@ -29,12 +29,12 @@ public class PollingFilter implements FileFilter {
 
 	private String _pattern;
 	
-	PollingFilter(String pattern) {
+	public PollingFilter(String pattern) {
 		_pattern = pattern;
 	}
 	
 	public boolean accept(File file) {
-		return file.isFile() && file.getName().matches(_pattern);
+		return (file.isFile() && file.getName().matches(_pattern));
 	}
 	
 }

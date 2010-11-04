@@ -26,43 +26,54 @@ import java.io.File;
 
 import javax.xml.namespace.QName;
 
+import org.switchyard.BaseHandler;
+import org.switchyard.Context;
+import org.switchyard.Direction;
+import org.switchyard.Exchange;
+import org.switchyard.ExchangePattern;
+import org.switchyard.Message;
+import org.switchyard.MessageBuilder;
+import org.switchyard.ServiceDomain;
+import org.switchyard.components.file.FileComponent;
+import org.switchyard.components.file.FileServiceConfig;
+import org.switchyard.event.ExchangeOutEvent;
+import org.switchyard.internal.BaseContext;
+import org.switchyard.internal.ServiceDomains;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.switchyard.BaseHandler;
-import org.switchyard.Context;
-import org.switchyard.Exchange;
-import org.switchyard.ExchangePattern;
-import org.switchyard.Message;
-import org.switchyard.components.file.FileComponent;
-import org.switchyard.event.ExchangeOutEvent;
-import org.switchyard.internal.BaseContext;
 
 
 public class FileProviderTest {
 	private final QName IN_ONLY_SERVICE = new QName("provider-in-only");
 	private final QName IN_OUT_SERVICE = new QName("provider-in-out");
-	
+	private final static String DOMAIN_KEY = "FileProviderTestDomain";
 	private File _testRoot = new File("target/test/FileProviderTest");
 	
 	private FileServiceContext _serviceContext;
 	private FileComponent _fileComponent;
-	private ReplyHandler _replyHandler;
 	private Context _context;
+	private ServiceDomain _domain;
+
 	
 	@Before
 	public void setUp() throws Exception {
 		// clean up from last run
 		Util.delete(_testRoot);
 		
-		_context = new BaseContext();
-		_fileComponent = new FileComponent();
-		_fileComponent.init(_context);
-		_serviceContext = new FileServiceContext();
-		_replyHandler = new ReplyHandler();
-		//_channel.getHandlerChain().addLast("counter", _replyHandler);
+		if (ServiceDomains.getDomain(DOMAIN_KEY) == null) {
+			_domain = ServiceDomains.createDomain(DOMAIN_KEY);
+		} else {
+			_domain = ServiceDomains.getDomain(DOMAIN_KEY);
+		}
 		
+		_context = new BaseContext();
+		_serviceContext = new FileServiceContext();
+
+		_fileComponent = new FileComponent(DOMAIN_KEY);
+		_fileComponent.init();
+
 		_testRoot.mkdirs();
 	}
 	
@@ -73,13 +84,12 @@ public class FileProviderTest {
 
 	@Test
 	public void testInOnly() throws Exception {
-		/*
 		_serviceContext.setPattern(ExchangePattern.IN_ONLY);
 		_serviceContext.setTargetPath(_testRoot.getAbsolutePath());
-		_fileComponent.deploy(IN_ONLY_SERVICE, _serviceContext, ExchangePattern.IN_ONLY);
+		FileServiceConfig config = new FileServiceConfig(IN_ONLY_SERVICE, ExchangePattern.IN_ONLY, _serviceContext);
+		_fileComponent.deploy(config, Direction.SEND);
 		_fileComponent.start(IN_ONLY_SERVICE);
-		
-		//invokeService(IN_ONLY_SERVICE, ExchangePattern.IN_ONLY, "InOnly Test");
+		invokeService(IN_ONLY_SERVICE, ExchangePattern.IN_ONLY, "InOnly Test");
 		
 		// wait for the file spooler to pick up the message and write the file
 		Thread.sleep(500);
@@ -88,16 +98,16 @@ public class FileProviderTest {
 		
 		File[] requests = _testRoot.listFiles(Util.createFilter(".*request"));
 		Assert.assertTrue(requests.length == 1);
-		*/
 	}
 	
-
-	/*
+	@Test
 	public void testInOut() throws Exception {
 		
 		_serviceContext.setPattern(ExchangePattern.IN_OUT);
 		_serviceContext.setTargetPath(_testRoot.getAbsolutePath());
-		_fileComponent.deploy(IN_OUT_SERVICE, _serviceContext);
+		FileServiceConfig config = new FileServiceConfig(IN_OUT_SERVICE, ExchangePattern.IN_OUT, _serviceContext);
+		_domain.registerService(IN_OUT_SERVICE, _fileComponent.getFileSpool());
+		_fileComponent.deploy(config, Direction.SEND);
 		_fileComponent.start(IN_OUT_SERVICE);
 		
 		invokeService(IN_OUT_SERVICE, ExchangePattern.IN_OUT, "InOut Test");
@@ -114,18 +124,14 @@ public class FileProviderTest {
 		// verify that the reply was received by the consuming channel
 		//Assert.assertTrue(_replyHandler._receiveCount == 1);
 	}
-	*/
 	
-	/*
 	private void invokeService(QName service, ExchangePattern pattern, String content) {
-		Exchange exchange = _channel.createExchange(pattern);
-		Message message = _context.getMessageFactory().createMessage();
+		Exchange exchange = _domain.createExchange(service, pattern);
+		MessageBuilder mb = MessageBuilder.newInstance();
+		Message message = mb.buildMessage();
 		message.setContent(content);
-		exchange.setIn(message);
-		exchange.setService(service);
-		_channel.send(exchange);
+		exchange.sendIn(message);
 	}
-	*/
 	
 
 	class ReplyHandler extends BaseHandler {

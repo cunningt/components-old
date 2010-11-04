@@ -27,13 +27,11 @@ import java.io.FileFilter;
 
 import javax.xml.namespace.QName;
 
-import org.switchyard.components.file.FileUtil;
-import org.switchyard.components.file.PollingFilter;
-import org.switchyard.components.file.Properties;
 import org.switchyard.Exchange;
 import org.switchyard.Message;
 import org.switchyard.MessageBuilder;
 import org.switchyard.ServiceDomain;
+import org.switchyard.internal.ServiceDomains;
 
 public class FilePoll implements Runnable {
 
@@ -47,14 +45,16 @@ public class FilePoll implements Runnable {
 	private QName				_service;
 	private ServiceDomain		_domain;
 	
-	public FilePoll(FileServiceConfig config, MessageBuilder messageFactory, ServiceDomain domain) {
-		_domain = domain;
+	public FilePoll(FileServiceConfig config) {
 		_config = config;
-		_service = config.getServiceName();
-		_messageBuilder = messageFactory;
+		
+		_domain = ServiceDomains.getDomain(config.getDomainName());
+		_service = _config.getServiceName();
+		
+		_messageBuilder = MessageBuilder.newInstance();
 		
 		initDirs();
-		_pollFilter = new PollingFilter(config.getFilter());
+		_pollFilter = new PollingFilter(_config.getFilter());
 	}
 	
 	public void run() {
@@ -72,17 +72,19 @@ public class FilePoll implements Runnable {
 			String content = FileUtil.readContent(file);
 			Message message = _messageBuilder.buildMessage();
 			message.setContent(content);
+
+			_domain.registerService(_service, _config.getExchangeHandler());
 			
-			Exchange exchange = _domain.createExchange(_service, _config.getExchangePattern());
+			Exchange exchange = _domain.createExchange(_service, _config.getExchangePattern(),
+					_config.getExchangeHandler());
 			exchange.getContext().setProperty(Properties.IN_FILE_DIR, _pollDir.getAbsolutePath());
 			exchange.getContext().setProperty(Properties.IN_FILE_NAME, file.getName());
 			exchange.sendIn(message);
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
-		}
+		} 
 	}
-	
 	
 	private void initDirs() {
 		_pollDir = _config.getTargetDir();
@@ -99,5 +101,4 @@ public class FilePoll implements Runnable {
 						"Failed to create work directory: " + _workDir.getAbsolutePath());
 		}
 	}
-
 }

@@ -30,11 +30,9 @@ import java.util.concurrent.TimeUnit;
 
 import javax.xml.namespace.QName;
 
-import org.switchyard.components.file.FilePoll;
-import org.switchyard.components.file.FileSpool;
 import org.switchyard.Context;
-import org.switchyard.ExchangePattern;
-import org.switchyard.MessageBuilder;
+import org.switchyard.Direction;
+import org.switchyard.ExchangeHandler;
 import org.switchyard.Service;
 import org.switchyard.ServiceDomain;
 import org.switchyard.internal.ServiceDomains;
@@ -44,9 +42,11 @@ public class FileComponent {
 	
 	private static final String SERVICE_TYPE = "file";
 	
+	private String _domainName;
 	private ServiceDomain _domain;
 	private Service _service;
 	private Context _context;
+	private ServiceRegistration _sr;
 	private ScheduledExecutorService _scheduler;
 	private FileSpool _spooler;
 	private Map<QName, Future<?>> _pollers = 
@@ -56,24 +56,34 @@ public class FileComponent {
 	private Map<QName, FileServiceConfig> _providedServices = 
 		new HashMap<QName, FileServiceConfig>();
 
-	public FileComponent() {
+	public FileComponent(String domainName) {
 		_scheduler = Executors.newScheduledThreadPool(2);
-		_domain = ServiceDomains.getDomain();
+		_domain = ServiceDomains.getDomain(domainName);
+		_domainName = domainName;
 	}
 
-	public void init(Context context) {
-		_context = context;
+	public void init() {
 		_spooler = new FileSpool();
-		//_channel.getHandlerChain().addLast("file-spooler", _spooler);
-	}
-
-	public void destroy() {
 	}
 
 	public String getServiceType() {
 		return SERVICE_TYPE;
 	}
 
+	public void destroy() {
+	}
+
+	public void deploy(FileServiceConfig config, Direction direction) {		
+		config.setDomainName(_domainName);
+		_spooler.addService(config);
+		if (direction == Direction.RECEIVE) {
+			_consumedServices.put(config.getServiceName(), config);
+		} else if (direction == Direction.SEND) {
+			_providedServices.put(config.getServiceName(), config);
+		}
+	}
+
+	
 	public void start(QName service) {
 		if (_consumedServices.containsKey(service)) {
 			createPoller(_consumedServices.get(service));
@@ -81,22 +91,18 @@ public class FileComponent {
 		else {
 			_service = _domain.registerService(service, _spooler);
 			FileServiceConfig config = _providedServices.get(service);
-			if (config.getExchangePattern().equals(ExchangePattern.IN_OUT)) {
-				// we need to set up a polling thread for replies
-				createPoller(config);
-			}
 		}
-	}
+	}	
 	
-	public void deploy(QName service, Context context, ExchangePattern exchangePattern) {		
-		FileServiceConfig config = new FileServiceConfig(service, exchangePattern, context);
-		_spooler.addService(config);
-		_providedServices.put(service, config);
+	public ExchangeHandler getFileSpool() {
+		return _spooler;
 	}
 
 	public void stop(QName service) {
 		if (_providedServices.containsKey(service)) {
-			_service.unregister();	
+			if (_service != null) { 
+				_service.unregister();	
+			}
 		}
 		
 		if (_pollers.containsKey(service)) {
@@ -114,8 +120,7 @@ public class FileComponent {
 	}
 	
 	private void createPoller(FileServiceConfig config) {
-		FilePoll consumer = new FilePoll(
-				config, MessageBuilder.newInstance(), _domain);
+		FilePoll consumer = new FilePoll(config);
 		Future<?> scheduledConsumer = _scheduler.scheduleAtFixedRate(
 				consumer, 0, 3, TimeUnit.SECONDS);
 		_pollers.put(config.getServiceName(), scheduledConsumer);

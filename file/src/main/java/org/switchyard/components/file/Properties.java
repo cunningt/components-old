@@ -25,8 +25,8 @@ package org.switchyard.components.file;
 public final class Properties {
 
 	public static final String IN_FILE_DIR = 
-		"org.switchyard.file.inFileDir";
+		"org.jboss.esb.cinco.file.inFileDir";
 	public static final String IN_FILE_NAME = 
-		"org.switchyard.file.inFileName";
+		"org.jboss.esb.cinco.file.inFileName";
 	
 }

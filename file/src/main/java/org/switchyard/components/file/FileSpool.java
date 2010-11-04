@@ -28,8 +28,6 @@ import java.util.Map;
 
 import javax.xml.namespace.QName;
 
-import org.switchyard.components.file.FileUtil;
-import org.switchyard.components.file.Properties;
 import org.switchyard.BaseHandler;
 import org.switchyard.Direction;
 import org.switchyard.Exchange;

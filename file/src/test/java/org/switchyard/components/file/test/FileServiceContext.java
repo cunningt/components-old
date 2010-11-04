@@ -24,7 +24,6 @@ package org.switchyard.components.file.test;
 
 import javax.xml.namespace.QName;
 
-import org.switchyard.Context;
 import org.switchyard.ExchangePattern;
 import org.switchyard.components.file.FileServiceConfig;
 import org.switchyard.internal.BaseContext;
